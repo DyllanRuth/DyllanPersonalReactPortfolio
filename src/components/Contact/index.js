@@ -1,15 +1,37 @@
 import Loader from 'react-loaders'
 import './index.scss'
 import AnimatedLetters from '../AnimatedLetters'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import emailjs from '@emailjs/browser'
 
 const Contact = () => {
     const [letterClass, setLetterClass] = useState('text-animate')
+    const refForm = useRef()
     useEffect(() => {
         return setTimeout(() => {
             setLetterClass('text-animate-hover')
     }, 3000)
 }, [])
+const sendEmail =(e) => {
+    e.preventDefault()
+    emailjs
+    .sendForm(
+        'gmail',
+        'template_r91b84i',
+        refForm.current,
+        '72tfJXct-eYGJTizR'
+    )
+    .then(
+        () => {
+            alert('Message successfully sent!')
+            window.location.reload(false)
+        },
+        () => {
+            alert('Failed to send the Message, please try again.')
+        }
+    )
+}
+
     return (
         <>
         <div className='container contact-page'>
@@ -17,8 +39,9 @@ const Contact = () => {
                 <h1>
                     <AnimatedLetters
                     letterClass={letterClass} 
-                    strArray={['C','o','n','t','a','c','t',' ','m','e']}/>
+                    strArray={['C','o','n','t','a','c','t',' ','m','e']}
                     idx={15}
+                    />
                 </h1>
                 <p>
                     I am interested in intern opportunities - especially ambitious or 
@@ -26,7 +49,7 @@ const Contact = () => {
                     do not hesitate to contact me using the form below.
                 </p>
                 <div className='contact-form'>
-                    <form>
+                    <form ref={refForm} onSubmit={sendEmail}>
                         <ul>
                             <li className='half'>
                                 <input type="text" name="name" placeholder="Name" required />
